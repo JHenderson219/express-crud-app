@@ -14,26 +14,17 @@
     </form>
 
     <ul class="list">
-      <% for(var i = 0; i < items.length; i++) { %>
-        <li class="list__item" id="list__item-<%= items[i].id %>" is-complete="<%= items[i].isComplete %>">
-          <div class="list__item__content">
-            <%= items[i].content %>
-          </div>
-          <div class="list__item__settings-icon">icon</div>
-          <div class="settings-widget" data-id="<%= items[i].id %>">
-            <a class="settings-widget__delete">Delete</a>
-            <a class="settings-widget__edit">Edit</a>
-          </div>
-        </li>
-      <% } %>
     </ul>
   </main>
-  
+
   <script id="template__list-item" type="text/x-handlebars-template">
-        <li class="list__item" id="list__item-{{ id }}" is-complete="{{ isComplete }}">
-          <div class="list__item__content">
-            {{ content }}
-          </div>
+        <li class="list__item" id="list__item-{{ id }}" item-id={{ id }} is-complete="{{ isComplete }}">
+          <label>
+            <input type="checkbox" {{#if isComplete}} checked {{/if}} item-id={{ id }}  />
+            <div class="list__item__content">
+              {{ content }}
+            </div>
+          </label>
           <div class="list__item__settings-icon">icon</div>
           <div class="settings-widget" data-id="{{ id }}">
             <a class="settings-widget__delete">Delete</a>
@@ -41,7 +32,10 @@
           </div>
         </li>
   </script>
-
+  
+  <script>
+    window.LIST = <%- JSON.stringify(items) %>
+  </script>
   <script src="scripts/handlebars-4.0.5.min.js"></script>
   <script src="/scripts/jquery-v3.1.0.min.js"></script>
   <script src="/scripts/main.js"></script>

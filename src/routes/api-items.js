@@ -57,15 +57,21 @@ Update item
 ============================= */
 router.put('/update/:id', function (req, res) {
   var updatedItem = {
-    content: req.body.content,
-    isComplete: req.body.isComplete,
     id: req.params.id,
   }
+  if (req.body.content) {
+    updatedItem.content = req.body.content;
+  }
+  if (req.body.isComplete) {
+    updatedItem.isComplete = req.body.isComplete;
+  }
+
   var foundItem = false;
   startData = startData.map(function (item) {
     if (item.id === updatedItem.id) {
       foundItem = true;
-      item = updatedItem;
+      item = Object.assign({}, item, updatedItem);
+      updatedItem = item;
     }
     return item;
   });

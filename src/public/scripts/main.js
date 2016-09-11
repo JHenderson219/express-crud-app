@@ -1,6 +1,17 @@
 (function($){
+
   var $list = $('.list');
   var $inputField = $('#item-form__content');
+  var list__item__SOURCE = $('#template__list-item').html();
+
+
+  // List coming from server on initial page load
+  var startList = window.LIST;
+
+  startList.map(function (item) {
+    addItemToList(item);
+    return item;
+  });
 
   $('#item-form').submit(function(e) {
     e.preventDefault();
@@ -27,18 +38,17 @@
     });
   }
   function addItemToList(item) {
-    var list__item__SOURCE = $('#template__list-item').html();
     var template = Handlebars.compile(list__item__SOURCE);
+    
+    item.isComplete = convertToBool(item.isComplete);
 
     var newItem = template(item);
 
-    $list.append(newItem) // add item to list
+    let newItemNode = $list.append(newItem) // add item to list
       .find('#list__item-' + item.id) // find the dom node
-      .on('click', deleteItem); // add on delete click event
-  }
 
-  // Adding Delete button event listener when the page loads
-  $('.settings-widget__delete').on('click', deleteItem);
+      addListeners(newItemNode);
+  }
 
   function deleteItem() {
     var id = $(this).parent().attr('data-id');
@@ -61,38 +71,54 @@
     });
   }
 
-  // $('.settings-widget__edit').on('click', editItem);
+  function addListeners ($item) {
+    $item.find('.settings-widget__delete').on('click', deleteItem); // add on delete click event
+    $item.find('input[type="checkbox"]').on('click', updateIsComplete);
+  }
 
-  // function editItem() {
-  //   var id = $(this).parent().attr('data-id');
+  function updateIsComplete() {
+    // this is going to determine the status of the check
+    // send the update to the server
+    // then update the view once the server has been updated
+    var isChecked = $(this).prop('checked');
+    var itemId = $(this).attr('item-id')
 
-  //   editItemAjax(id, function (response) {
-  //     if (response.success) {
-  //       updateItem(response.item);
-  //     }
-  //   });
-  // }
+    var item = {
+      id: itemId,
+      isComplete: isChecked
+    };
+    editItemAjax(item, function(response){
+      if(response.success) {
+        updateItemView(response.item);
+      }
+    });
+  }
 
-  // function updateItemView (updatedItem) {
-  //   var $item = $('#list__item-' + updatedItem.id);
+  function updateItemView (updatedItem) {
+    var $item = $('#list__item-' + updatedItem.id);
+    var template = Handlebars.compile(list__item__SOURCE);
+    updatedItem.isComplete = convertToBool(updatedItem.isComplete);
 
-  //   $item.find('.list__item__content').text(updatedItem.content);
-  // }
+    $item.replaceWith(template(updatedItem));
+    
+    addListeners($('#list__item-' + updatedItem.id));
+  }
 
-  // function editItemAjax(id, cb) {
-  //   $.ajax({
-  //     url: 'http://localhost:8000/api/items/update' + id,
-  //     type: 'PUT',
-  //     success: function(response) {
-  //       cb(response);
-  //     }
-  //   })
-  // }
+  function editItemAjax(item, cb) {
+    $.ajax({
+      url: 'http://localhost:8000/api/items/update/' + item.id,
+      type: 'PUT',
+      data: item,
+      success: function(response) {
+        cb(response);
+      }
+    })
+  }
 
-
-
-
-
+  function convertToBool(potentialString) {
+    // convert string to boolean
+    return (typeof potentialString === "string" && potentialString.toLowerCase() === "true") ? true : false;
+  }
 
   
 
