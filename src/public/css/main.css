@@ -1,0 +1,53 @@
+* {
+  box-sizing: border-box;
+}
+*:before, *:after {
+  box-sizing: inherit;
+}
+
+.item-form__button:before {
+  display: block;
+}
+
+.item-form--add-item .item-form__button:before {
+  content: 'Add Item';
+}
+
+.item-form--edit-item .item-form__button:before {
+  content: 'Update';
+}
+
+
+
+
+
+
+
+
+
+.list {
+  max-width: 450px;
+  margin: 0 auto;
+}
+.list__item {
+  position: relative;
+  padding: 15px 20px
+
+}
+.list__item[is-complete='true'] .list__item__content {
+  text-decoration: line-through;
+}
+
+.list__item__settings-icon {
+  text-decoration: none !important;
+}
+
+.settings-widget {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  
+}

@@ -2,10 +2,16 @@ var express = require('express');
 var router = express.Router();
 var startData = require('./../data.json');
 
+/* =============================
+Get all items
+============================= */
 router.get('/', function (req, res) {
   res.json(startData);
 });
 
+/* =============================
+Get single item
+============================= */
 router.get('/:id', function (req, res) {
   var requestedId = req.params.id;
   var requestedItem;
@@ -27,10 +33,14 @@ router.get('/:id', function (req, res) {
   res.json(requestedItem);
 });
 
+/* =============================
+Add item
+============================= */
 router.post('/add', function (req, res) {
+
   var newItem = {
     content: req.body.content,
-    id: Date.now(),
+    id: Date.now().toString(),
     isComplete: false,
   }
 
@@ -42,6 +52,9 @@ router.post('/add', function (req, res) {
   res.json(responseObject);
 });
 
+/* =============================
+Update item
+============================= */
 router.put('/update/:id', function (req, res) {
   var updatedItem = {
     content: req.body.content,
@@ -70,6 +83,9 @@ router.put('/update/:id', function (req, res) {
   }
 });
 
+/* =============================
+Delete item
+============================= */
 router.delete('/delete/:id', function (req, res) {
   var itemFound = false;
   var itemIndex;
@@ -82,9 +98,9 @@ router.delete('/delete/:id', function (req, res) {
     return item;
   });
 
-  startData.splice(itemIndex, 1);
 
   if(itemFound) {
+    startData.splice(itemIndex, 1);
     res.json({
       success: true,
     });
