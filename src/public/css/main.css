@@ -25,15 +25,21 @@
 
 
 
-.list {
+main {
   max-width: 450px;
   margin: 0 auto;
+}
+.list {
+  margin: 0;
 }
 .list__item {
   position: relative;
   padding: 15px 20px
-
 }
+.list__item .list__item__content {
+  display: inline-block;
+}
+
 .list__item[is-complete='true'] .list__item__content {
   text-decoration: line-through;
 }
@@ -49,5 +55,4 @@
   background: #fff;
   border-radius: 10px;
   padding: 10px;
-  
 }
