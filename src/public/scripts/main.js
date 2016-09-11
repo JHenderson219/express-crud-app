@@ -16,13 +16,41 @@
   $('#item-form').submit(function(e) {
     e.preventDefault();
 
-    var $newContent = $inputField;
-    var newContent = $newContent.val();
+    if ($(this).attr('type') === 'add') {
+      var $newContent = $inputField;
+      var newContent = $newContent.val();
 
-    if ($newContent.val() !== '') {  
-      addItem($newContent.val());
+      if ($newContent.val() !== '') {  
+        addItem($newContent.val());
+      }
+    }
+
+    if ($(this).attr('type') === 'edit') {
+      var updatedContent = $inputField.val();
+      var targetId = $(this).attr('target-item-id');
+
+      var updatedItem = {
+        content: updatedContent,
+        id: targetId
+      }
+      
+      editItemAjax(updatedItem, function(response) {
+        if (response.success) {
+          updateItemView(response.item);
+        }
+
+        resetForm();
+      });
     }
   });
+
+  function resetForm() {
+    $form = $('#item-form');
+
+    $form.attr('type', 'add'); // default should be add item
+    $form.attr('target-item-id', ''); // no default target
+    $inputField.val(''); // reset input field
+  }
   /*
     Adding an item 
     - Called in form submission
@@ -33,7 +61,7 @@
       if (response.success) {
 
         addItemToList(response.item);
-        $inputField.val('');
+        resetForm();
       } 
     });
   }
@@ -74,6 +102,7 @@
   function addListeners ($item) {
     $item.find('.settings-widget__delete').on('click', deleteItem); // add on delete click event
     $item.find('input[type="checkbox"]').on('click', updateIsComplete);
+    $item.find('.settings-widget__edit').on('click', editContent);
   }
 
   function updateIsComplete() {
@@ -113,6 +142,17 @@
         cb(response);
       }
     })
+  }
+
+  function editContent() {
+    var id = $(this).parent().attr('data-id');
+    var content = $('#list__item-' + id).find('.list__item__content').text().trim();
+
+    // set the form to edit mode
+    $('#item-form').attr('type', 'edit');
+    $('#item-form').attr('target-item-id', id);
+    $inputField.val(content);
+    
   }
 
   function convertToBool(potentialString) {

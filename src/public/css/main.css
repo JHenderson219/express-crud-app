@@ -9,11 +9,11 @@
   display: block;
 }
 
-.item-form--add-item .item-form__button:before {
+.item-form[type="add"] .item-form__button:before {
   content: 'Add Item';
 }
 
-.item-form--edit-item .item-form__button:before {
+.item-form[type="edit"] .item-form__button:before {
   content: 'Update';
 }
 
