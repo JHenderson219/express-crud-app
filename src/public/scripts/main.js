@@ -4,7 +4,6 @@
   var $inputField = $('#item-form__content');
   var list__item__SOURCE = $('#template__list-item').html();
 
-
   // List coming from server on initial page load
   var startList = window.LIST;
 
@@ -12,6 +11,9 @@
     addItemToList(item);
     return item;
   });
+
+
+  $('.item-form__cancel').on('click', resetForm);
 
   $('#item-form').submit(function(e) {
     e.preventDefault();
@@ -43,6 +45,7 @@
       });
     }
   });
+
 
   function resetForm() {
     $form = $('#item-form');
@@ -159,7 +162,6 @@
     // convert string to boolean
     return (typeof potentialString === "string" && potentialString.toLowerCase() === "true") ? true : false;
   }
-
   
 
 
